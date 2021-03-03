@@ -39,6 +39,13 @@ namespace FoodToGo
                 return NotFound();
             }
 
+            var allItems = (from c in _context.Item select c).ToList();
+            var catItems = allItems.Where(x => x.CategoryId.Equals(id));
+            var itemId = catItems.Count() > 0 ? catItems.FirstOrDefault().Id : 0;
+                
+            ViewBag.items = catItems;
+            ViewBag.itemId = itemId;
+
             return View(category);
         }
 

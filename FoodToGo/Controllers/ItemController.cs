@@ -61,11 +61,11 @@ namespace FoodToGo.Controllers
         {
             if (ModelState.IsValid)
             {
-                var itemCategory = _context.Category.Where(x => x.CatName == item.Category).First();
-                var itemCart = _context.Cart.Where(x => x.UserName == item.Cart).First();
+                var itemCategory = _context.Category.Where(x => x.CatName == item.Category).FirstOrDefault();
+                var itemCart = _context.Cart.Where(x => x.UserName == item.Cart).FirstOrDefault();
 
-                item.CartId = itemCart.Id;
-                item.CategoryId = itemCategory.Id;
+                item.CartId = itemCart == null ? 0 : itemCart.Id;
+                item.CategoryId = itemCategory == null ? 0 : itemCategory.Id;
 
                 _context.Add(item);
                 await _context.SaveChangesAsync();
