@@ -6,29 +6,17 @@
     ViewData["Title"] = "Index";
 }
 
-<h3>Categoris</h3>
+<h3>Click categories below for list of available items</h3>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Create New Category</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-               Date Available
-            </th>
-            <th>
-               Category
-            </th>
-            <th></th>
-        </tr>
-    </thead>
+
+@foreach (var item in Model) {
+<table>
+    <thead></thead>
     <tbody>
-        @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
             <td>
                 <a asp-action="Details" asp-route-id="@item.Id">
                     @Html.DisplayFor(modelItem => item.CatName)
@@ -39,6 +27,6 @@
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
-        }
     </tbody>
 </table>
+        }

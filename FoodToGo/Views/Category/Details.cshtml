@@ -8,14 +8,20 @@
 
 <h1>@Html.DisplayFor(model => model.CatName)</h1>
 
-
+<p>Click on items below for pricing.</p>
 <div>
 
     @foreach (var item in ViewBag.items)
     {
-    <a asp-controller="Item" asp-action="Details" asp-route-id="@item.Id">
-        @item.ItemName
-    </a>
+    <table>
+        <tr>
+            <td>
+                <a asp-controller="Item" asp-action="Details" asp-route-id="@item.Id">
+                    @item.ItemName
+                </a>
+            </td>
+        </tr>
+    </table>
     }
 </div>
 <br />

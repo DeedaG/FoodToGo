@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FoodToGo.Models;
 
-namespace FoodToGo
+namespace FoodToGo.Controllers
 {
     public class CategoryController : Controller
     {
@@ -39,9 +39,9 @@ namespace FoodToGo
                 return NotFound();
             }
 
-            var allItems = (from c in _context.Item select c).ToList();
-            var catItems = allItems.Where(x => x.CategoryId.Equals(id));
-            var itemId = catItems.Count() > 0 ? catItems.FirstOrDefault().Id : 0;
+            var items = await _context.Item.ToListAsync();
+            var catItems = items != null ? items.Where(x => x.CategoryId.Equals(id)) : null;
+            var itemId = catItems != null ? catItems.FirstOrDefault().Id : 0;
                 
             ViewBag.items = catItems;
             ViewBag.itemId = itemId;

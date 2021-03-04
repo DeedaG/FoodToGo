@@ -7,24 +7,24 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FoodToGo.Models;
 
-namespace FoodToGo.Controllers
+namespace FoodToGo
 {
-    public class ItemController : Controller
+    public class CartController : Controller
     {
         private readonly CategoryDbContext _context;
 
-        public ItemController(CategoryDbContext context)
+        public CartController(CategoryDbContext context)
         {
             _context = context;
         }
 
-        // GET: Item
+        // GET: Cart
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Item.ToListAsync());
+            return View(await _context.Cart.ToListAsync());
         }
 
-        // GET: Item/Details/5
+        // GET: Cart/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -32,52 +32,43 @@ namespace FoodToGo.Controllers
                 return NotFound();
             }
 
-            var item = await _context.Item
+            var cart = await _context.Cart
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (item == null)
+            if (cart == null)
             {
                 return NotFound();
             }
 
-            return View(item);
+            var items = await _context.Item.Where(x => x.CartId.Equals(id)).ToListAsync();
+            var itemsInCart = from c in items select c.ItemName;
+            ViewBag.itemsInCart = itemsInCart;
+
+            return View(cart);
         }
 
-        // GET: Item/Create
+        // GET: Cart/Create
         public IActionResult Create()
         {
-            var categories = (from c in _context.Category select c).ToList();
-            var catNames = (from c in categories select c.CatName).ToList();
-            ViewBag.catNames = catNames;
-
             return View();
         }
 
-        // POST: Item/Create
+        // POST: Cart/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Date,ItemName,Category,CategoryId,Cart,CartId,Discount,Price")] Item item)
+        public async Task<IActionResult> Create([Bind("Id,Date,UserName")] Cart cart)
         {
-            var categories = await _context.Category.ToListAsync();
-            var cart = await _context.Cart.ToListAsync();
-
             if (ModelState.IsValid)
             {
-                var itemCategory = categories.Where(x => x.CatName == item.Category).FirstOrDefault();
-                var itemCart = cart.Where(x => x.UserName == item.Cart).FirstOrDefault();
-
-                item.CartId = itemCart == null ? 0 : itemCart.Id;
-                item.CategoryId = itemCategory == null ? 0 : itemCategory.Id;
-
-                _context.Add(item);
+                _context.Add(cart);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(item);
+            return View(cart);
         }
 
-        // GET: Item/Edit/5
+        // GET: Cart/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -85,25 +76,22 @@ namespace FoodToGo.Controllers
                 return NotFound();
             }
 
-            var item = await _context.Item.FindAsync(id);
-            if (item == null)
+            var cart = await _context.Cart.FindAsync(id);
+            if (cart == null)
             {
                 return NotFound();
             }
-            return View(item);
+            return View(cart);
         }
 
-        // POST: Item/Edit/5
+        // POST: Cart/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Date,ItemName,Category,CategoryId,Cart,CartId,Price,Discount")] Item item)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Date,UserName")] Cart cart)
         {
-            var categories = await _context.Category.ToListAsync();
-            var cart = await _context.Cart.ToListAsync();
-
-            if (id != item.Id)
+            if (id != cart.Id)
             {
                 return NotFound();
             }
@@ -112,18 +100,12 @@ namespace FoodToGo.Controllers
             {
                 try
                 {
-                    var itemCategory = categories.Where(x => x.CatName == item.Category).FirstOrDefault();
-                    var itemCart = cart.Where(x => x.UserName == item.Cart).FirstOrDefault();
-
-                    item.CartId = itemCart == null ? 0 : itemCart.Id;
-                    item.CategoryId = itemCategory == null ? 0 : itemCategory.Id;
-
-                    _context.Update(item);
+                    _context.Update(cart);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ItemExists(item.Id))
+                    if (!CartExists(cart.Id))
                     {
                         return NotFound();
                     }
@@ -134,10 +116,10 @@ namespace FoodToGo.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(item);
+            return View(cart);
         }
 
-        // GET: Item/Delete/5
+        // GET: Cart/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -145,30 +127,30 @@ namespace FoodToGo.Controllers
                 return NotFound();
             }
 
-            var item = await _context.Item
+            var cart = await _context.Cart
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (item == null)
+            if (cart == null)
             {
                 return NotFound();
             }
 
-            return View(item);
+            return View(cart);
         }
 
-        // POST: Item/Delete/5
+        // POST: Cart/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var item = await _context.Item.FindAsync(id);
-            _context.Item.Remove(item);
+            var cart = await _context.Cart.FindAsync(id);
+            _context.Cart.Remove(cart);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ItemExists(int id)
+        private bool CartExists(int id)
         {
-            return _context.Item.Any(e => e.Id == id);
+            return _context.Cart.Any(e => e.Id == id);
         }
     }
 }

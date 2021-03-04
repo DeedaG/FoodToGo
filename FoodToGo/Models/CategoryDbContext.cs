@@ -1,4 +1,5 @@
-﻿using FoodToGo.Models;
+﻿using System;
+using FoodToGo.Models;
 using Microsoft.EntityFrameworkCore;
 
 public class CategoryDbContext : DbContext

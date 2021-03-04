@@ -2,14 +2,16 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FoodToGo.Migrations
 {
     [DbContext(typeof(CategoryDbContext))]
-    partial class CategoryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210304154019_Item_Price_Discount")]
+    partial class Item_Price_Discount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

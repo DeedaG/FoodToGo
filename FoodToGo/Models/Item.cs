@@ -13,8 +13,12 @@ namespace FoodToGo.Models
 
         public int CategoryId { get; set; }
 
-        public string Cart { get; set; }
+        public string? Cart { get; set; }
 
-        public int CartId { get; set; }
+        public int? CartId { get; set; }
+
+        public decimal Price { get; set; }
+
+        public decimal? Discount { get; set; }
     }
 }
